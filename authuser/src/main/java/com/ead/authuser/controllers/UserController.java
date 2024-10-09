@@ -57,7 +57,10 @@ public class UserController {
 
         if(userModelOptional.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-        } else {
+        } if(userModelOptional.get().getCpf().equals(userDto.getCpf())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(" Cpf is Already Taken.");
+        }
+        else {
             var userModel = userModelOptional.get();
             userModel.setFullName(userDto.getFullName());
             userModel.setPhoneNumber(userDto.getPhoneNumber());
@@ -77,7 +80,7 @@ public class UserController {
 
         if(userModelOptional.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-        } if(!userModelOptional.get().getPassword().equals(userDtogetOldPassword())){
+        } if(!userModelOptional.get().getPassword().equals(userDto.getPassword())){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Mismatched old password.");
         } else {
             var userModel = userModelOptional.get();

@@ -28,12 +28,14 @@ public class AuthenticationController {
                                                    UserDto userDto){
 
         if(userService.existsByUsername(userDto.getUsername())){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Username is Already Taken!");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Username is Already Taken.");
 
         }
         if(userService.existsByEmail(userDto.getEmail())){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: E-mail is Already Taken!");
-
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: E-mail is Already Taken.");
+        }
+        if(userService.existsByCpf(userDto.getCpf())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Cpf is Already Taken.");
         }
             var userModel = new UserModel();
             BeanUtils.copyProperties(userDto, userModel);
