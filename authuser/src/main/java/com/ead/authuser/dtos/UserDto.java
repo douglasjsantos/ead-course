@@ -10,7 +10,7 @@ import java.util.UUID;
 public class UserDto {
 
     private UUID userId;
-    private String userName;
+    private String username;
     private String email;
     private String password;
     private String oldPassword;
@@ -18,4 +18,20 @@ public class UserDto {
     private String phoneNumber;
     private String cpf;
     private String imageUrl;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUserName(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }
