@@ -77,7 +77,7 @@ public class UserController {
 
         if(userModelOptional.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-        } if(!userModelOptional.get().getPassword().equals(userDto.getOldPassword())){
+        } if(!userModelOptional.get().getPassword().equals(userDtogetOldPassword())){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Mismatched old password.");
         } else {
             var userModel = userModelOptional.get();
