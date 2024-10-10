@@ -13,11 +13,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.annotation.WebFilter;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
+
+
 @RequestMapping("/auth")
 public class AuthenticationController {
 
