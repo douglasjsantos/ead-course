@@ -55,10 +55,13 @@ public class UserServiceImpl implements UserService {
         return userRepository.existsByCpf(cpf);
     }
 
-
-
     @Override
     public Page<UserModel> findAll(Specification<UserModel> spec, Pageable pageable) {
         return userRepository.findAll(spec, pageable);
+    }
+
+    @Override
+    public Page<UserModel> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 }

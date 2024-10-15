@@ -25,6 +25,7 @@ public interface UserService {
     boolean existsByCpf(String cpf);
 
     Page<UserModel> findAll(Specification<UserModel> spec, Pageable pageable);
+    Page<UserModel> findAll(Pageable pageable);
 
 
 }
