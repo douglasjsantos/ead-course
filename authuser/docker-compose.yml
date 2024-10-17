@@ -1,8 +1,9 @@
 version: '3.8'
+
 services:
-  authuser-db:
-    image: postgres
-    container_name: authuser-db
+  postgres:
+    image: postgres:13
+    container_name: postgres
     environment:
       POSTGRES_DB: ead-authuser
       POSTGRES_USER: postgres
@@ -10,9 +11,9 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - authuser-db-data:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
 
-  authuser-app:
+  app:
     build:
       context: .
       dockerfile: Dockerfile
@@ -20,11 +21,11 @@ services:
     ports:
       - "8087:8087"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://authuser-db:5432/ead-authuser
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ead-authuser
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: 123
     depends_on:
-      - authuser-db
+      - postgres
 
 volumes:
-  authuser-db-data:
+  pgdata:

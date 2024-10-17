@@ -4,30 +4,39 @@ on:
   push:
     branches:
       - main
-      - staging
   pull_request:
     branches:
       - main
-      - staging
 
 jobs:
   build:
+    name: Build and Test
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:13
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: ead-authuser
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: 123
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
 
     - name: Set up JDK 17
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v2
       with:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Cache Maven dependencies
-      uses: actions/cache@v3
+    - name: Cache Maven packages
+      uses: actions/cache@v2
       with:
-        path: ~/.m2/repository
+        path: ~/.m2
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
           ${{ runner.os }}-maven-
@@ -35,32 +44,31 @@ jobs:
     - name: Build with Maven
       run: mvn clean package -DskipTests
 
-    - name: Build Docker image
-      run: docker build -t ead-course-app .
+    - name: Run tests
+      run: mvn test
 
-    - name: Log in to Docker Hub
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-    - name: Push Docker image
-      run: docker tag ead-course-app:latest ${{ secrets.DOCKER_USERNAME }}/ead-course-app:${{ github.sha }}
-      run: docker push ${{ secrets.DOCKER_USERNAME }}/ead-course-app:${{ github.sha }}
-
-  deploy-staging:
-    needs: build
+  deploy:
+    name: Deploy to Docker
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/staging'
+    needs: build
 
     steps:
-    - name: Deploy to Staging
-      run: echo "Deploying to Staging environment..."
-      # Aqui, você implementa os comandos para subir seu container em staging
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-  deploy-production:
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
 
-    steps:
-    - name: Deploy to Production
-      run: echo "Deploying to Production environment..."
-      # Aqui, você implementa os comandos para subir seu container em produção
+    - name: Login to DockerHub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and push Docker image
+      run: |
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/ead-authuser:latest .
+        docker push ${{ secrets.DOCKER_USERNAME }}/ead-authuser:latest
+
+    - name: Deploy to staging
+      run: docker-compose -f docker-compose.yml up -d
