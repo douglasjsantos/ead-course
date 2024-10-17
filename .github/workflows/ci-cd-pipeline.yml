@@ -21,9 +21,6 @@ jobs:
           distribution: 'adopt'
           java-version: '17'
 
-      - name: Navigate to authuser directory
-        run: cd ./authuser  # Navegar até o diretório onde está o pom.xml
-
       - name: Build with Maven
         run: mvn clean package -DskipTests
         working-directory: ./authuser  # Define o diretório de trabalho para o comando Maven
@@ -38,18 +35,28 @@ jobs:
       - name: Install Docker
         run: |
           sudo apt-get update
-          sudo apt-get install -y docker.io
-          sudo systemctl start docker
+          sudo apt-get remove -y docker docker-engine docker.io containerd runc
+          sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+          echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list
+          sudo apt-get update
+          sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+
+      - name: Start Docker service
+        run: |
+          sudo service docker start
+          sudo usermod -aG docker $USER
           sudo systemctl enable docker
 
       - name: Install Docker Compose
         run: |
-          sudo apt-get install -y docker-compose
+          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
 
       - name: Deploy to Staging
         run: |
           echo "Deploying to Staging Environment"
-          docker-compose -f ./docker-compose.staging.yml up -d --build
+          docker-compose -f ./authuser/docker-compose.staging.yml up -d --build
         working-directory: ./authuser  # Define o diretório de trabalho para o comando Docker
 
   deploy-production:
@@ -63,16 +70,26 @@ jobs:
       - name: Install Docker
         run: |
           sudo apt-get update
-          sudo apt-get install -y docker.io
-          sudo systemctl start docker
+          sudo apt-get remove -y docker docker-engine docker.io containerd runc
+          sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+          echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list
+          sudo apt-get update
+          sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+
+      - name: Start Docker service
+        run: |
+          sudo service docker start
+          sudo usermod -aG docker $USER
           sudo systemctl enable docker
 
       - name: Install Docker Compose
         run: |
-          sudo apt-get install -y docker-compose
+          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
 
       - name: Deploy to Production
         run: |
           echo "Deploying to Production Environment"
-          docker-compose -f ./docker-compose.production.yml up -d --build
+          docker-compose -f ./authuser/docker-compose.production.yml up -d --build
         working-directory: ./authuser  # Define o diretório de trabalho para o comando Docker
