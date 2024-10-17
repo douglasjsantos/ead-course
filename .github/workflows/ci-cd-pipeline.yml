@@ -23,7 +23,7 @@ jobs:
 
       - name: Build with Maven
         run: mvn clean package -DskipTests
-        working-directory: ./authuser  # Define o diretório de trabalho para o comando Maven
+        working-directory: ./authuser/authuser  # Ajustando o diretório de trabalho para o comando Maven
 
   deploy-staging:
     needs: build
@@ -53,11 +53,14 @@ jobs:
           sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
 
+      - name: List files in authuser/authuser directory
+        run: ls -l ./authuser/authuser  # Listar os arquivos para verificar a presença do docker-compose.staging.yml
+
       - name: Deploy to Staging
         run: |
           echo "Deploying to Staging Environment"
-          docker-compose -f ./authuser/docker-compose.staging.yml up -d --build
-        working-directory: ./authuser  # Define o diretório de trabalho para o comando Docker
+          docker-compose -f ./authuser/authuser/docker-compose.staging.yml up -d --build
+        working-directory: ./authuser/authuser  # Define o diretório de trabalho para o comando Docker
 
   deploy-production:
     if: github.ref == 'refs/heads/main'
@@ -88,8 +91,11 @@ jobs:
           sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
 
+      - name: List files in authuser/authuser directory
+        run: ls -l ./authuser/authuser  # Listar os arquivos para verificar a presença do docker-compose.production.yml
+
       - name: Deploy to Production
         run: |
           echo "Deploying to Production Environment"
-          docker-compose -f ./authuser/docker-compose.production.yml up -d --build
-        working-directory: ./authuser  # Define o diretório de trabalho para o comando Docker
+          docker-compose -f ./authuser/authuser/docker-compose.production.yml up -d --build
+        working-directory: ./authuser/authuser  # Define o diretório de trabalho para o comando Docker
