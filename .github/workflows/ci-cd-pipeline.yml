@@ -1,0 +1,52 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
+
+  deploy-staging:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy to Staging
+        run: |
+          echo "Deploying to Staging Environment"
+          # Comandos para fazer o deploy no ambiente de staging
+          docker-compose -f docker-compose.staging.yml up -d --build
+
+  deploy-production:
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy to Production
+        run: |
+          echo "Deploying to Production Environment"
+          # Comandos para fazer o deploy no ambiente de produção
+          docker-compose -f docker-compose.production.yml up -d --build

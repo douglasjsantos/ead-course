@@ -4,9 +4,9 @@ services:
   app:
     image: authuser-app:latest
     ports:
-      - "8081:8080"  # Mapeia a porta 8081 do host para a porta 8080 do container
+      - "8080:8080"  # Mapeia a porta 8080 do host para a porta 8080 do container
     environment:
-      SPRING_PROFILES_ACTIVE: staging
+      SPRING_PROFILES_ACTIVE: production
     networks:
       - app-network
 
