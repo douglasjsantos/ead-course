@@ -1,0 +1,12 @@
+version: '3'
+services:
+  app:
+    image: my-java-app:latest
+    ports:
+      - "8087:8087"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db-service:5432/ead-authuser
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=123
+    depends_on:
+      - db-service

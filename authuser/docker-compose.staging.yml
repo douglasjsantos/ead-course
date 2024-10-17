@@ -1,0 +1,12 @@
+version: '3'
+services:
+  app:
+    image: my-java-app:latest
+    ports:
+      - "8087:8087"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db-service:3306/ead_auth_user
+      - SPRING_DATASOURCE_USERNAME=staging_db_user
+      - SPRING_DATASOURCE_PASSWORD=staging_db_pass
+    depends_on:
+      - db-service
