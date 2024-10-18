@@ -43,8 +43,8 @@ jobs:
       - name: Deploy to Production
         run: |
           echo "Deploying to Production Environment"
-          docker-compose -f ./docker-compose.yml up -d --build
-          docker-compose -f ./docker-compose.yml ps
+          docker-compose -f ./authuser/docker-compose.yml up -d --build
+          docker-compose -f ./authuser/docker-compose.yml ps
 
       - name: Check Production Deployment
         run: |
