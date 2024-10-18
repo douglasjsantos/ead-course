@@ -9,19 +9,17 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123
     ports:
-      - "5433:5433"
+      - "5433:5432"  # Mapeando a porta 5432 do contêiner para a porta 5433 da máquina host
     volumes:
       - pgdata:/var/lib/postgresql/data
 
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: seu_usuario/authuser-app:latest  # Substitua 'seu_usuario' pelo seu nome de usuário do Docker Hub
     container_name: authuser-app
     ports:
       - "8087:8087"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ead-authuser
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ead-authuser  # Usando a porta correta do PostgreSQL
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: 123
     depends_on:
