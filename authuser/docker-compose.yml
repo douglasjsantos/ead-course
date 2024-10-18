@@ -14,7 +14,7 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   app:
-    image: seu_usuario/authuser-app:latest  # Substitua 'seu_usuario' pelo seu nome de usuário do Docker Hub
+    image: poolsteler/authuser-app:latest  # Substitua 'seu_usuario' pelo seu nome de usuário do Docker Hub
     container_name: authuser-app
     ports:
       - "8087:8087"
