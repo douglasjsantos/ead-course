@@ -38,9 +38,6 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-      - name: Install Docker
-        uses: docker/setup-docker@v2
-
       - name: List files in authuser/authuser directory
         run: ls -l ./authuser/authuser
 
@@ -71,9 +68,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
-
-      - name: Install Docker
-        uses: docker/setup-docker@v2
 
       - name: List files in authuser/authuser directory
         run: ls -l ./authuser/authuser
