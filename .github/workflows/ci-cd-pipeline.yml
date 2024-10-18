@@ -59,7 +59,7 @@ jobs:
       - name: Deploy to Staging
         run: |
           echo "Deploying to Staging Environment"
-          docker-compose -f ./authuser/authuser/docker-compose.staging.yml up -d --build
+          docker-compose -f ./docker-compose.staging.yml up -d --build
         working-directory: ./authuser/authuser  # Define o diretório de trabalho para o comando Docker
 
   deploy-production:
@@ -97,5 +97,5 @@ jobs:
       - name: Deploy to Production
         run: |
           echo "Deploying to Production Environment"
-          docker-compose -f ./authuser/authuser/docker-compose.production.yml up -d --build
+          docker-compose -f ./docker-compose.production.yml up -d --build
         working-directory: ./authuser/authuser  # Define o diretório de trabalho para o comando Docker
